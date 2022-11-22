@@ -1,0 +1,29 @@
+From 458e1ca933903948021a1cb8c07881d9ed369578 Mon Sep 17 00:00:00 2001
+From: Costa Guilherme <guilherme.gc.costa@partner.bmw.com.br>
+Date: Tue, 5 Jul 2022 12:04:20 -0300
+Subject: [PATCH] Adding batch command to _pyd genrule
+
+---
+ build_defs.bzl | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/build_defs.bzl b/build_defs.bzl
+index c9fd601..eb223c3 100644
+--- a/build_defs.bzl
++++ b/build_defs.bzl
+@@ -77,10 +77,10 @@ def pybind_extension(
+         }),
+         srcs = [name + ".dll"],
+         outs = [name + ".pyd"],
+-        cmd = "cp $< $@"
++        cmd = "cp $< $@",
++        cmd_bat = """copy /Y "$(<)" "$(@)" """
+     )
+ 
+-
+ # Builds a pybind11 compatible library. This can be linked to a pybind_extension.
+ def pybind_library(
+         name,
+-- 
+2.29.2.windows.1
+

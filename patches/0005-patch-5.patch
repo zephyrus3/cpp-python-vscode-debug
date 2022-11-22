@@ -1,0 +1,132 @@
+From a09ee603d33b3b46ea53aef6b620d93f16613eec Mon Sep 17 00:00:00 2001
+From: Costa Guilherme <guilherme.gc.costa@partner.bmw.com.br>
+Date: Tue, 5 Jul 2022 12:22:31 -0300
+Subject: [PATCH] Using cmd_bat command on windows target
+
+---
+ python_configure.bzl | 61 ++++++++++++++++++++++++++++++--------------
+ 1 file changed, 42 insertions(+), 19 deletions(-)
+
+diff --git a/python_configure.bzl b/python_configure.bzl
+index c5724b3..777368d 100644
+--- a/python_configure.bzl
++++ b/python_configure.bzl
+@@ -87,11 +87,15 @@ def _read_dir(repository_ctx, src_dir):
+         result = find_result.stdout
+     return result
+ 
+-def _genrule(src_dir, genrule_name, command, outs, local):
++def _genrule(src_dir, genrule_name, command, outs, local, is_win):
+     """Returns a string with a genrule.
+ 
+     Genrule executes the given command and produces the given outputs.
+     """
++    cmd_ = '    cmd = """\n'
++    if is_win:
++        cmd_ = '    cmd_bat = """\n'
++
+     return (
+         "genrule(\n" +
+         '    name = "' +
+@@ -100,7 +104,7 @@ def _genrule(src_dir, genrule_name, command, outs, local):
+         "    outs = [\n" +
+         outs +
+         "\n    ],\n" +
+-        '    cmd = """\n' +
++        cmd_ +
+         command +
+         '\n   """,\n' +
+         ")\n"
+@@ -137,13 +141,23 @@ def _symlink_genrule_for_dir(
+     outs = []
+     for i in range(len(dest_files)):
+         if dest_files[i] != "":
+-            # If we have only one file to link we do not want to use the dest_dir, as
+-            # $(@D) will include the full path to the file.
+-            dest = "$(@D)/" + dest_dir + dest_files[i] if len(dest_files) != 1 else "$(@D)/" + dest_files[i]
+-
+-            # Copy the headers to create a sandboxable setup.
+-            cmd = "cp -f"
+-            command.append(cmd + ' "%s" "%s"' % (src_files[i], dest))
++            if _is_windows(repository_ctx):
++                cmd="xcopy /Y /S"
++                if src_dir == None:
++                    command.append(cmd + ' "%s" "%s"' % (src_files[i].replace("/","\\\\"), "$(@D)\\\\"))
++                elif command == []:
++                    # To simplify the copy of the include files, we use
++                    # xcopy to copy the whole include folder.
++                    src_win=src_dir.replace("/","\\\\") + "\\\\"
++                    dest_win="$(@D)\\\\" + dest_dir.replace("/","\\\\") + "\\\\"
++                    command.append(cmd + ' "%s" "%s"' % (src_win, dest_win))
++            else:
++                # If we have only one file to link we do not want to use the dest_dir, as
++                # $(@D) will include the full path to the file.
++                dest = "$(@D)/" + dest_dir + dest_files[i] if len(dest_files) != 1 else "$(@D)/" + dest_files[i]
++                # Copy the headers to create a sandboxable setup.
++                cmd = "cp -f"
++                command.append(cmd + ' "%s" "%s"' % (src_files[i], dest))
+             outs.append('        "' + dest_dir + dest_files[i] + '",')
+     genrule = _genrule(
+         src_dir,
+@@ -151,6 +165,7 @@ def _symlink_genrule_for_dir(
+         " && ".join(command),
+         "\n".join(outs),
+         local = True,
++        is_win = _is_windows(repository_ctx),
+     )
+     return genrule
+ 
+@@ -201,8 +216,7 @@ def _get_python_lib(repository_ctx, python_bin):
+         if _is_windows(repository_ctx):
+             python_lib = _norm_path(python_lib)
+         return python_lib
+-    print_lib = ("<<END\n" +
+-                 "from __future__ import print_function\n" +
++    print_lib = ("from __future__ import print_function\n" +
+                  "import site\n" +
+                  "import os\n" +
+                  "\n" +
+@@ -231,23 +245,32 @@ def _get_python_lib(repository_ctx, python_bin):
+                  "  if os.path.isdir(path):\n" +
+                  "    paths.append(path)\n" +
+                  "if len(paths) >=1:\n" +
+-                 "  print(paths[0])\n" +
+-                 "END")
+-    cmd = "%s - %s" % (python_bin, print_lib)
+-    result = repository_ctx.execute([_get_bash_bin(repository_ctx), "-c", cmd])
++                 "  print(paths[0])\n"
++                 )
++    result = repository_ctx.execute([python_bin, "-c", print_lib])
+     return result.stdout.strip("\n")
+ 
+ def _check_python_lib(repository_ctx, python_lib):
+     """Checks the python lib path."""
+-    cmd = 'test -d "%s" -a -x "%s"' % (python_lib, python_lib)
+-    result = repository_ctx.execute([_get_bash_bin(repository_ctx), "-c", cmd])
++    if _is_windows(repository_ctx):
++        python_lib_win = python_lib.replace("/", "\\")
++        cmd = 'IF EXIST "%s" (EXIT /B 0) ELSE (EXIT /B 1)' % (python_lib_win)
++        result = repository_ctx.execute(["cmd.exe", "/c", cmd])
++    else:
++        cmd = 'test -d "%s" -a -x "%s"' % (python_lib, python_lib)
++        result = repository_ctx.execute([_get_bash_bin(repository_ctx), "-c", cmd])
+     if result.return_code == 1:
+         _fail("Invalid python library path: %s" % python_lib)
+ 
+ def _check_python_bin(repository_ctx, python_bin):
+     """Checks the python bin path."""
+-    cmd = '[[ -x "%s" ]] && [[ ! -d "%s" ]]' % (python_bin, python_bin)
+-    result = repository_ctx.execute([_get_bash_bin(repository_ctx), "-c", cmd])
++    if _is_windows(repository_ctx):
++        python_bin = python_bin.replace("/", "\\")
++        cmd = 'IF EXIST "%s" (EXIT /B 0) ELSE (EXIT /B 1)' % (python_bin)
++        result = repository_ctx.execute(["cmd.exe", "/c", cmd])
++    else:
++        cmd = '[[ -x "%s" ]] && [[ ! -d "%s" ]]' % (python_bin, python_bin)
++        result = repository_ctx.execute([_get_bash_bin(repository_ctx), "-c", cmd])
+     if result.return_code == 1:
+         _fail("--define %s='%s' is not executable. Is it the python binary?" % (
+             _PYTHON_BIN_PATH,
+-- 
+2.29.2.windows.1
+
