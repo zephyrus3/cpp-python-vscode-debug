@@ -4,22 +4,23 @@
 import sys
 import unittest
 
-import python.foo_module
-import python.foo_module.add as pyadd
-import python.file as pyfile
-from python.foo_module.add import Foo
+from debug_session.python_session.add_module import add as pyadd
+from debug_session.python_session.add_module.foo import Foo
+import file as pyfile
 
 
 if __debug__:
+    import debug_session.python_session.add_module as add_module
+    
     print(f'\npython path: {sys.path}')
 
-    print(f'\npython.foo_module: ${dir(python.foo_module)}')
+    print(f'\nadd_module: ${dir(add_module)}')
 
-    print(f'\npython.foo_module.add: ${dir(python.foo_module.add)}')
-    print(f'\npyadd: ${dir(pyadd)}')
+    print(f'\nadd_module.add: ${dir(add_module.add)}')
+    print(f'\npyadd: ${dir(add_module.add)}')
 
-    print(f'\npython.foo_module.add.Foo: ${dir(python.foo_module.add.Foo)}')
-    print(f'\npyadd.Foo: ${dir(pyadd.Foo)}')
+    print(f'\nadd_module.add.Foo: ${dir(add_module.foo.Foo)}')
+    print(f'\npyadd.Foo: ${dir(add_module.foo.Foo)}')
 
 class TestFoo(unittest.TestCase):
     '''Test Foo'''
@@ -35,9 +36,5 @@ class TestFoo(unittest.TestCase):
         p = Foo()
         self.assertEqual(31, p.f())
         
-    def test_file(self):
-    filepath = 
-    ret = pyfile.print_file()
-
 if __name__ == '__main__':
     unittest.main(verbosity=2)
