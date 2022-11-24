@@ -6,7 +6,7 @@ import unittest
 cwd = os.getcwd()
 sys.path.append(cwd)
 
-from python.py_module import add as pyadd
+from python_cpp_debug_example.python.py_module import add as pyadd
 
 # if __debug__:
 #     import python.py_module as py_module
