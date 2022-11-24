@@ -1,2 +1,3 @@
-bazel-*/
+bazel-*/*
 __pycache__/
+bazel-*
