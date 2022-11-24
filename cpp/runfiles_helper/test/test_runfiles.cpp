@@ -10,7 +10,7 @@
 
 namespace RunFilesTest {
 const std::string invalidKey = "invalid/path/invalid_file.txt";
-const std::string validKey = "debug_session/resources/myfile.txt";
+const std::string validKey = "python_cpp_debug_example/resources/myfile.txt";
 const auto runfilesPath = std::string(std::getenv("TEST_SRCDIR"));
 
 TEST(RunFilesTest, InvalidPath) {
@@ -32,7 +32,7 @@ TEST(RunFilesTest, ReadFileFromRunfiles) {
                        std::istreambuf_iterator<char>());
 
   EXPECT_THAT(buffer, ::testing::Not(::testing::IsEmpty()));
-  std::cout << "Buffer Contents" << buffer;
+  std::cout << "Buffer Contents: " << buffer;
 }
 
 
