@@ -1,0 +1,43 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(Win) Bazel Test add_module cpp",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bazel-out/x64_windows-dbg/bin/cpp/add_module/test/test.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/bazel-out/x64_windows-dbg/bin/cpp/add_module/test/test.exe.runfiles",
+            "environment": [],
+            "console": "externalTerminal"
+        },
+        {
+            "name": "(Win) Bazel Test generic cpp",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bazel-out/x64_windows-dbg/bin/${relativeFileDirname}/test.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/bazel-out/x64_windows-dbg/bin/${relativeFileDirname}/test.exe.runfiles",
+            "console": "externalTerminal",
+            "environment": [
+                {
+                    "name": "RUNFILES_MANIFEST_FILE",
+                    "value": "${workspaceFolder}/bazel-out/x64_windows-dbg/bin/${relativeFileDirname}/test.exe.runfiles_manifest"
+                },
+                {
+                    "name": "RUNFILES_DIR",
+                    "value": "${workspaceFolder}/bazel-out/x64_windows-dbg/bin/${relativeFileDirname}/test.exe.runfiles"
+                },
+                {
+                    "name": "TEST_SRCDIR",
+                    "value": "${workspaceFolder}/bazel-out/x64_windows-dbg/bin/${relativeFileDirname}/test.exe.runfiles"
+                },
+            ],
+        }
+    ]
+}
