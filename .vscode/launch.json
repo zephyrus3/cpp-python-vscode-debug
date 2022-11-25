@@ -9,21 +9,33 @@
             "type": "pythoncpp",
             "request": "launch",
             "pythonLaunchName": "Python: test_pyd",
-            "cppAttachName": "(Windows) Attach"
+            "cppAttachName": "(gdb) Attach python3"
         },
         {
-            "name": "(Windows) Attach",
-            "type": "cppvsdbg",
+            "name": "(gdb) Attach python3",
+            "type": "cppdbg",
             "request": "attach",
+            "program": "${workspaceFolder}/bazel-python_cpp_debug_example/external/python39_x86_64-unknown-linux-gnu/bin/python3",
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "sourceFileMap":{
+                "/proc/self/cwd": "${workspaceFolder}"
+            }
         },
         {
             "name": "Python: test_pyd",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/cpp_n_python/cpp_on_python/python_scripts/test_pyd.py",
-            "python" : "${workspaceFolder}/bazel-python_cpp_debug_example/external/python39_x86_64-pc-windows-msvc/python.exe",
-            "console": "integratedTerminal",
-            "cwd" :"${workspaceFolder}/bazel-out/x64_windows-dbg/bin/cpp_n_python/cpp_on_python/python_scripts/test_pyd.exe.runfiles"
+            "python": "${workspaceFolder}/bazel-python_cpp_debug_example/external/python39_x86_64-unknown-linux-gnu/bin/python3",
+            "cwd" :"${workspaceFolder}/bazel-out/k8-dbg/bin/cpp_n_python/cpp_on_python/python_scripts/test_pyd.runfiles",
+            "console": "integratedTerminal"
         }
     ]
 }
