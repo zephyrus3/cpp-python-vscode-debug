@@ -1,0 +1,29 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python C++ Debugger",
+            "type": "pythoncpp",
+            "request": "launch",
+            "pythonLaunchName": "Python: test_pyd",
+            "cppAttachName": "(Windows) Attach"
+        },
+        {
+            "name": "(Windows) Attach",
+            "type": "cppvsdbg",
+            "request": "attach",
+        },
+        {
+            "name": "Python: test_pyd",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/cpp_n_python/cpp_on_python/python_scripts/test_pyd.py",
+            "python" : "${workspaceFolder}/bazel-python_cpp_debug_example/external/python39_x86_64-pc-windows-msvc/python.exe",
+            "console": "integratedTerminal",
+            "cwd" :"${workspaceFolder}/bazel-out/x64_windows-dbg/bin/cpp_n_python/cpp_on_python/python_scripts/test_pyd.exe.runfiles"
+        }
+    ]
+}
