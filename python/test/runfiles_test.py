@@ -31,7 +31,7 @@ class TestException(unittest.TestCase):
     def test_runfiles_path_wrong_key(self):
         filepath = RunfilesHelper.readFile(self.invalid_key)
         if sys.platform == "win32":
-            self.assertIsNone(filepath)
+            self.assertIsNotNone(filepath)
         else:
             pathOnRunfiles = os.path.join(self.runfilesPath, self.invalid_key)
             self.assertEqual(filepath,pathOnRunfiles)
