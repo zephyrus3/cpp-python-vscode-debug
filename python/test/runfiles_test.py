@@ -29,16 +29,20 @@ class TestException(unittest.TestCase):
         self.assertEqual(RunfilesHelper().i, 12345 )
 
     def test_runfiles_path_wrong_key(self):
-        pathOnRunfiles = os.path.join(self.runfilesPath, self.invalid_key)
-        
-        self.assertEqual(RunfilesHelper.readFile( self.invalid_key),pathOnRunfiles)
+        filepath = RunfilesHelper.readFile(self.invalid_key)
+        if sys.platform == "win32":
+            self.assertIsNone(filepath)
+        else:
+            pathOnRunfiles = os.path.join(self.runfilesPath, self.invalid_key)
+            self.assertEqual(filepath,pathOnRunfiles)
         
     def test_read_file_from_runfiles(self):
-        pathOnRunfiles = os.path.join(self.runfilesPath, self.valid_key)
         filepath = RunfilesHelper.readFile(self.valid_key)
-        self.assertEqual(filepath,pathOnRunfiles)
+        if sys.platform != "win32":
+            pathOnRunfiles = os.path.join(self.runfilesPath, self.valid_key)
+            self.assertEqual(filepath,pathOnRunfiles)
         
-        with open(filepath) as f:
+        with open(filepath, "r") as f:
             print(f.read())
         
         
