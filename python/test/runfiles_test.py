@@ -6,7 +6,7 @@ import unittest
 cwd = os.getcwd()
 sys.path.append(cwd)
 
-from python.py_module.runfiles_helper import RunfilesHelper
+from python_cpp_debug_example.python.py_module.runfiles_helper import RunfilesHelper
 
 # if __debug__:
 #     import python.py_module.runfiles_helper as py_module

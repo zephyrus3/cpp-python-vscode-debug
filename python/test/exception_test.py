@@ -6,7 +6,7 @@ import unittest
 cwd = os.getcwd()
 sys.path.append(cwd)
 
-from python.py_module.exception_raiser import raise_exception
+from python_cpp_debug_example.python.py_module.exception_raiser import raise_exception
 
 # if __debug__:
 #     import python.py_module.exception_raiser as py_module
