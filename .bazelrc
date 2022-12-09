@@ -1,0 +1,16 @@
+# build --subcommands=pretty_print
+# test --subcommands=pretty_print
+
+# build -s
+# test -s 
+
+build -c dbg
+test -c dbg
+
+test  --cache_test_results=no
+test --strip=never
+test --experimental_ui_max_stdouterr_bytes=8048576
+test --test_output=streamed
+
+build --test_env="PYTHONDONTWRITEBYTECODE=1"
+test --test_env="PYTHONDONTWRITEBYTECODE=1"
