@@ -3,7 +3,8 @@ py_test(
   size = "small",
   srcs = ["test.py", "file.py"],
   deps = [
-    "//python_session/add_module",
+    "//python/add_module",
+    "@rules_python//python/runfiles",
   ],
   data = ["//resources:resource_files"],
   tags = ["unit"],

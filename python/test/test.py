@@ -2,15 +2,22 @@
 '''Test APIs'''
 
 import sys
+import os
 import unittest
 
-from debug_session.python_session.add_module import add as pyadd
-from debug_session.python_session.add_module.foo import Foo
-import file as pyfile
+# workaround to debug from vscode
+cwd = os.getcwd()
+sys.path.append(cwd)
 
+workspace_dir = os.path.join(cwd,"python_cpp_debug_example")
+if os.path.exists(workspace_dir):
+    sys.path.append(workspace_dir)
+
+from python.add_module import add as pyadd
+from python.add_module.foo import Foo
 
 if __debug__:
-    import debug_session.python_session.add_module as add_module
+    import python.add_module as add_module
     
     print(f'\npython path: {sys.path}')
 
